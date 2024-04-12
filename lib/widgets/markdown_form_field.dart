@@ -5,26 +5,31 @@ import 'markdown_toolbar.dart';
 
 class MarkdownFormField extends StatefulWidget {
   const MarkdownFormField({
-    Key? key,
+    super.key,
+    this.expands = false,
+    this.minLines,
+    this.maxLines,
     this.controller,
     this.scrollController,
     this.onChanged,
+    this.decoration,
     this.style,
     this.emojiConvert = false,
     this.onTap,
-    this.enableToolBar = false,
     this.autoCloseAfterSelectEmoji = true,
     this.textCapitalization = TextCapitalization.sentences,
     this.readOnly = false,
     this.cursorColor,
     this.focusNode,
     this.padding = const EdgeInsets.all(10),
-  }) : super(key: key);
+  });
 
-  /// For enable toolbar options
-  ///
-  /// if false, toolbar widget will not display
-  final bool enableToolBar;
+  // Exposing TextFormField options
+  final bool expands;
+  final int? minLines;
+  final int? maxLines;
+
+  final InputDecoration? decoration;
 
   /// Controls the text being edited.
   ///
@@ -118,10 +123,12 @@ class MarkdownFormField extends StatefulWidget {
   final EdgeInsetsGeometry padding;
 
   @override
-  _MarkdownFormFieldState createState() => _MarkdownFormFieldState();
+  State<MarkdownFormField> createState() => _MarkdownFormFieldState();
 }
 
 class _MarkdownFormFieldState extends State<MarkdownFormField> {
+  final GlobalKey editorKey = GlobalKey(debugLabel: 'editor');
+  final GlobalKey toolbarKey = GlobalKey(debugLabel: 'toolbar');
   // internal parameter
   late TextEditingController _internalController;
   late FocusNode _internalFocus;
@@ -149,34 +156,31 @@ class _MarkdownFormFieldState extends State<MarkdownFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return _focused
-        ? _editorOnFocused()
-        : GestureDetector(
-            onTap: () {
-              _focused = true;
-              _internalFocus.requestFocus();
-              setState(() {});
-            },
-            child: MarkdownParse(
-              key: const ValueKey<String>("zmarkdownparse"),
-              data: _internalController.text == ""
-                  ? "Type here. . ."
-                  : _internalController.text,
-            ),
-          );
-  }
-
-  Widget _editorOnFocused() {
-    return !widget.enableToolBar
-        ? _editor()
-        : Column(
-            children: [
-              _editor(),
-
-              // show toolbar
-              if (!widget.readOnly)
-                MarkdownToolbar(
-                  key: const ValueKey<String>("zmarkdowntoolbar"),
+    return GestureDetector(
+      onTap: () {
+        _focused = true;
+        _internalFocus.requestFocus();
+        setState(() {});
+      },
+      child: Stack(
+        children: [
+          _editor(),
+          // show toolbar
+          if (!widget.readOnly)
+            Positioned(
+              top: 1,
+              left: 1,
+              child: SizedBox(
+                width: editorKey.currentContext != null
+                    ? (editorKey.currentContext!.findRenderObject()
+                                as RenderBox)
+                            .size
+                            .width -
+                        2
+                    : double.maxFinite,
+                // width: 500,
+                child: MarkdownToolbar(
+                  key: toolbarKey,
                   controller: _internalController,
                   autoCloseAfterSelectEmoji: widget.autoCloseAfterSelectEmoji,
                   isEditorFocused: (bool status) {
@@ -191,12 +195,19 @@ class _MarkdownFormFieldState extends State<MarkdownFormField> {
                   focusNode: _internalFocus,
                   emojiConvert: widget.emojiConvert,
                 ),
-            ],
-          );
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   Widget _editor() {
     return MarkdownField(
+      fieldKey: editorKey,
+      expands: widget.expands,
+      minLines: widget.minLines,
+      maxLines: widget.maxLines,
       controller: _internalController,
       focusNode: _internalFocus,
       cursorColor: widget.cursorColor,
@@ -205,6 +216,7 @@ class _MarkdownFormFieldState extends State<MarkdownFormField> {
       onTap: widget.onTap,
       readOnly: widget.readOnly,
       scrollController: widget.scrollController,
+      decoration: widget.decoration,
       style: widget.style,
       textCapitalization: widget.textCapitalization,
       padding: widget.padding,

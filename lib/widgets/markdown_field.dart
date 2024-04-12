@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import '../src/emoji_input_formatter.dart';
+import 'package:simple_markdown_editor/src/emoji_input_formatter.dart';
 
 class MarkdownField extends StatelessWidget {
   const MarkdownField({
-    Key? key,
+    super.key,
+    required this.fieldKey,
+    this.expands = false,
+    this.minLines,
+    this.maxLines,
     this.controller,
     this.scrollController,
     this.onChanged,
+    this.decoration,
     this.style,
     this.emojiConvert = false,
     this.onTap,
@@ -15,7 +20,16 @@ class MarkdownField extends StatelessWidget {
     this.cursorColor,
     this.focusNode,
     this.padding = const EdgeInsets.all(10),
-  }) : super(key: key);
+  });
+
+  final GlobalKey fieldKey;
+
+  // Exposing TextFormField options
+  final bool expands;
+  final int? minLines;
+  final int? maxLines;
+
+  final InputDecoration? decoration;
 
   /// Controls the text being edited.
   ///
@@ -106,37 +120,53 @@ class MarkdownField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: padding,
-        child: TextField(
-          key: const ValueKey<String>("zmarkdowneditor"),
-          maxLines: null,
-          focusNode: focusNode,
-          controller: controller,
-          scrollController: scrollController,
-          onChanged: _onEditorChange,
-          onTap: onTap,
-          autocorrect: false,
-          keyboardType: TextInputType.multiline,
-          textCapitalization: textCapitalization,
-          readOnly: readOnly,
-          cursorColor: cursorColor,
-          style: style,
-          inputFormatters: [
-            if (emojiConvert) EmojiInputFormatter(),
-          ],
-          toolbarOptions: const ToolbarOptions(
-            copy: true,
-            paste: true,
-            cut: true,
-            selectAll: true,
+    final inputDecoration = decoration ??
+        const InputDecoration(
+          contentPadding: EdgeInsets.only(
+            top: 60,
+            bottom: 8,
           ),
-          decoration: const InputDecoration.collapsed(
-            hintText: "Type here. . .",
+        );
+
+    return TextFormField(
+      key: fieldKey,
+      expands: expands,
+      minLines: minLines,
+      maxLines: maxLines,
+      focusNode: focusNode,
+      controller: controller,
+      scrollController: scrollController,
+      onChanged: _onEditorChange,
+      onTap: onTap,
+      autocorrect: false,
+      keyboardType: TextInputType.multiline,
+      textCapitalization: textCapitalization,
+      readOnly: readOnly,
+      cursorColor: cursorColor,
+      style: style,
+      decoration: inputDecoration,
+      inputFormatters: [
+        if (emojiConvert) EmojiInputFormatter(),
+      ],
+      contextMenuBuilder: (context, editableTextState) {
+        final List<ContextMenuButtonItem> buttonItems =
+            editableTextState.contextMenuButtonItems;
+
+        buttonItems.insert(
+          0,
+          ContextMenuButtonItem(
+            label: 'Send email',
+            onPressed: () {
+              ContextMenuController.removeAny();
+            },
           ),
-        ),
-      ),
+        );
+
+        return AdaptiveTextSelectionToolbar.buttonItems(
+          anchors: editableTextState.contextMenuAnchors,
+          buttonItems: buttonItems,
+        );
+      },
     );
   }
 

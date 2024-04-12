@@ -6,80 +6,53 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const HomeScreen(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({
+    Key? key,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home Screen"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const EditorScreen()));
-              },
-              color: Colors.blue,
-              child: const Text(
-                "Editor Screen 1",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const EditorTestPreviewUnfocused()));
-              },
-              color: Colors.blue,
-              child: const Text(
-                "Editor Screen 2",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController exampleController = TextEditingController();
+  final ScrollController parseScrollController = ScrollController();
+
+  Stream<String> sampleListener(TextEditingController controller) async* {
+    // <- here
+    while (true) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      yield controller.value.text;
+    }
   }
-}
-
-// HomeScreen Editor
-class EditorScreen extends StatefulWidget {
-  const EditorScreen({Key? key}) : super(key: key);
 
   @override
-  _EditorScreenState createState() => _EditorScreenState();
-}
-
-class _EditorScreenState extends State<EditorScreen> {
-  final TextEditingController _controller = TextEditingController();
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // Clean up the controller when the widget is disposed.
+    exampleController.dispose();
+    parseScrollController.dispose();
     super.dispose();
   }
 
@@ -87,113 +60,75 @@ class _EditorScreenState extends State<EditorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Markdown Editor"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SecondScreen(
-                    data: _controller.text,
+        title: const Text("Markdown Form Field - Editor"),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              StreamBuilder(
+                stream: sampleListener(exampleController),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  return Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.black.withOpacity(0.1),
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: snapshot.hasError
+                        ? const Text('Error')
+                        : MarkdownParse(
+                            data: (snapshot.data) as String,
+                            controller: parseScrollController,
+                            shrinkWrap: true,
+                          ),
+                  );
+                },
+              ),
+              MarkdownFormField(
+                controller: exampleController,
+                minLines: 10,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(
+                    top: 120,
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                  ),
+                  label: const Text('Test'),
+                  hintText: "Type here. . .",
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.7),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.2),
+                      width: 2.0,
+                    ),
                   ),
                 ),
-              );
-            },
-            icon: const Icon(Icons.view_compact),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: MarkdownFormField(
-                controller: _controller,
-                enableToolBar: true,
-                emojiConvert: true,
-                autoCloseAfterSelectEmoji: false,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SecondScreen extends StatelessWidget {
-  const SecondScreen({Key? key, required this.data}) : super(key: key);
-
-  final String data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Markdown Parse"),
-      ),
-      body: MarkdownParse(
-        data: data,
-        onTapHastag: (String name, String match) {
-          // example : #hashtag
-          // name => hashtag
-          // match => #hashtag
-        },
-        onTapMention: (String name, String match) {
-          // example : @mention
-          // name => mention
-          // match => #mention
-        },
-      ),
-    );
-  }
-}
-
-// HomeScreen Editor
-class EditorTestPreviewUnfocused extends StatefulWidget {
-  const EditorTestPreviewUnfocused({Key? key}) : super(key: key);
-
-  @override
-  _EditorTestPreviewUnfocusedState createState() =>
-      _EditorTestPreviewUnfocusedState();
-}
-
-class _EditorTestPreviewUnfocusedState
-    extends State<EditorTestPreviewUnfocused> {
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Markdown Editor"),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              height: 300,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: MarkdownFormField(
-                controller: _controller,
-                enableToolBar: true,
-                emojiConvert: true,
-                autoCloseAfterSelectEmoji: false,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(),
-          ],
         ),
       ),
     );
