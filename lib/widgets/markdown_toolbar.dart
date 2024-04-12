@@ -7,19 +7,18 @@ import 'toolbar_item.dart';
 
 class MarkdownToolbar extends StatelessWidget {
   MarkdownToolbar({
-    Key? key,
+    super.key,
     required this.onPreviewChanged,
     required this.controller,
     this.emojiConvert = true,
     required this.focusNode,
     required this.isEditorFocused,
     this.autoCloseAfterSelectEmoji = true,
-  })  : toolbar = Toolbar(
+  }) : toolbar = Toolbar(
           controller: controller,
           focusNode: focusNode,
           isEditorFocused: isEditorFocused,
-        ),
-        super(key: key);
+        );
 
   final VoidCallback onPreviewChanged;
   final TextEditingController controller;
@@ -120,12 +119,12 @@ class MarkdownToolbar extends StatelessWidget {
             // checkbox list
             ToolbarItem(
               key: const ValueKey<String>("toolbar_checkbox_list_action"),
-              icon: FontAwesomeIcons.tasks,
+              icon: FontAwesomeIcons.listCheck,
               isExpandable: true,
               items: [
                 ToolbarItem(
                   key: const ValueKey<String>("checkbox"),
-                  icon: FontAwesomeIcons.solidCheckSquare,
+                  icon: FontAwesomeIcons.solidSquareCheck,
                   onPressedButton: () {
                     toolbar.action("- [x] ", "");
                   },
@@ -142,7 +141,7 @@ class MarkdownToolbar extends StatelessWidget {
             // emoji
             ToolbarItem(
               key: const ValueKey<String>("toolbar_emoji_action"),
-              icon: FontAwesomeIcons.solidSmile,
+              icon: FontAwesomeIcons.solidFaceSmile,
               onPressedButton: () {
                 _showModalSelectEmoji(context, controller.selection);
               },
@@ -225,7 +224,7 @@ class MarkdownToolbar extends StatelessWidget {
             final newSelection = toolbar.getSelection(selection);
 
             toolbar.action(emot, "", textSelection: newSelection);
-            // change selection baseoffset if not auto close emoji
+            // change selection base offset if not auto close emoji
             if (!autoCloseAfterSelectEmoji) {
               selection = TextSelection.collapsed(
                 offset: newSelection.baseOffset + emot.length,

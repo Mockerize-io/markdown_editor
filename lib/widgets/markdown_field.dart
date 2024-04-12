@@ -127,33 +127,6 @@ class MarkdownField extends StatelessWidget {
             bottom: 8,
           ),
         );
-    // InputDecoration(
-    //   prefixStyle: TextStyle(),
-    //   contentPadding: const EdgeInsets.only(
-    //     top: 120,
-    //     bottom: 16,
-    //     left: 16,
-    //     right: 16,
-    //   ),
-    //   label: const Text('Test'),
-    //   hintText: "Type here. . .",
-    //   filled: true,
-    //   fillColor: Theme.of(context).colorScheme.surface,
-    //   border: const OutlineInputBorder(),
-    //   focusedBorder: OutlineInputBorder(
-    //     borderRadius: BorderRadius.circular(8),
-    //     borderSide: BorderSide(
-    //       color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
-    //     ),
-    //   ),
-    //   enabledBorder: OutlineInputBorder(
-    //     borderRadius: BorderRadius.circular(8),
-    //     borderSide: BorderSide(
-    //       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-    //       width: 2.0,
-    //     ),
-    //   ),
-    // );
 
     return TextFormField(
       key: fieldKey,
