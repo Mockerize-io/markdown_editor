@@ -84,9 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: snapshot.hasError
                         ? const Text('Error')
                         : MarkdownParse(
-                            data: "${snapshot.data ?? ' '}",
+                            data: snapshot.data ?? ' ',
                             controller: parseScrollController,
-                            selectable: false,
+                            selectable: true,
                             shrinkWrap: true,
                           ),
                   );
