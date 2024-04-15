@@ -63,7 +63,7 @@ class ToolbarItem extends StatelessWidget {
                 ),
               ),
               expanded: Container(
-                color: Colors.white,
+                color: Colors.black.withOpacity(0.1),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   physics: const NeverScrollableScrollPhysics(),
@@ -74,7 +74,7 @@ class ToolbarItem extends StatelessWidget {
                         child: const Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Icon(
-                            FontAwesomeIcons.solidTimesCircle,
+                            FontAwesomeIcons.solidCircleXmark,
                             size: 16,
                             color: Colors.red,
                           ),
