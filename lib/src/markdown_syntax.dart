@@ -78,7 +78,7 @@ class ColoredMentionElementBuilder extends MarkdownElementBuilder {
         );
       },
       child: Text(
-        element.textContent + " ",
+        "${element.textContent} ",
         style: TextStyle(
           color: Colors.blue[700],
           fontWeight: FontWeight.w500,
