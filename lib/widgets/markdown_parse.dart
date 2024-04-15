@@ -15,6 +15,7 @@ class MarkdownParse extends StatelessWidget {
   const MarkdownParse({
     Key? key,
     required this.data,
+    this.selectable = false,
     this.onTapLink,
     this.onTapHastag,
     this.onTapMention,
@@ -35,6 +36,9 @@ class MarkdownParse extends StatelessWidget {
 
   /// The string markdown to display.
   final String data;
+
+  /// Is content selectable
+  final bool selectable;
 
   /// Called when the user taps a link.
   final MarkdownTapLinkCallback? onTapLink;
@@ -104,10 +108,15 @@ class MarkdownParse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// Fix for error when adding an empty checkbox to md
+    /// flutter Markdown selectable true The following _TypeError was thrown while calling onSelectionChanged for SelectionChangedCause.tap:
+    String finalData = '${data.trim()}'
+        '\r\n';
+
     return Markdown(
       key: const Key("defaultmarkdownformatter"),
-      data: data,
-      selectable: true,
+      data: finalData,
+      selectable: selectable,
       padding: const EdgeInsets.all(10),
       physics: physics,
       controller: controller,
