@@ -113,6 +113,80 @@ class MarkdownParse extends StatelessWidget {
     String finalData = '${data.trim()}'
         '\r\n';
 
+    final Widget markdownChild = MarkdownChild(
+      finalData: finalData,
+      selectable: false,
+      physics: physics,
+      controller: controller,
+      shrinkWrap: shrinkWrap,
+      syntaxHighlighter: syntaxHighlighter,
+      bulletBuilder: bulletBuilder,
+      styleSheetTheme: styleSheetTheme,
+      blockSyntaxes: blockSyntaxes,
+      inlineSyntaxes: inlineSyntaxes,
+      onTapHastag: onTapHastag,
+      onTapMention: onTapMention,
+      builders: builders,
+      styleSheet: styleSheet,
+      onTapLink: onTapLink,
+      imageBuilder: imageBuilder,
+      checkboxBuilder: checkboxBuilder,
+      checkboxIconSize: checkboxIconSize,
+    );
+
+    // Enabling selection true on Markdown is not enough, so we wrap the Markdown with a SelectionArea.
+    return selectable
+        ? SelectionArea(
+            child: markdownChild,
+          )
+        : markdownChild;
+  }
+}
+
+class MarkdownChild extends StatelessWidget {
+  const MarkdownChild({
+    super.key,
+    required this.finalData,
+    required this.selectable,
+    required this.physics,
+    required this.controller,
+    required this.shrinkWrap,
+    required this.syntaxHighlighter,
+    required this.bulletBuilder,
+    required this.styleSheetTheme,
+    required this.blockSyntaxes,
+    required this.inlineSyntaxes,
+    required this.onTapHastag,
+    required this.onTapMention,
+    required this.builders,
+    required this.styleSheet,
+    required this.onTapLink,
+    required this.imageBuilder,
+    required this.checkboxBuilder,
+    required this.checkboxIconSize,
+  });
+
+  final String finalData;
+  final bool selectable;
+  final ScrollPhysics? physics;
+  final ScrollController? controller;
+  final bool shrinkWrap;
+  final SyntaxHighlighter? syntaxHighlighter;
+  final MarkdownBulletBuilder? bulletBuilder;
+  final MarkdownStyleSheetBaseTheme? styleSheetTheme;
+  final List<md.BlockSyntax>? blockSyntaxes;
+  final List<md.InlineSyntax>? inlineSyntaxes;
+  final MarkdownTapTagCallback? onTapHastag;
+  final MarkdownTapTagCallback? onTapMention;
+  final Map<String, MarkdownElementBuilder> builders;
+  final MarkdownStyleSheet? styleSheet;
+  final MarkdownTapLinkCallback? onTapLink;
+  final MarkdownImageBuilder? imageBuilder;
+  final MarkdownCheckboxBuilder? checkboxBuilder;
+  final double? checkboxIconSize;
+
+  @override
+  Widget build(BuildContext context) {
     return Markdown(
       key: const Key("defaultmarkdownformatter"),
       data: finalData,
