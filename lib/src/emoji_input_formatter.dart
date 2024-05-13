@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:simple_markdown_editor/src/emoji_parser.dart';
+import 'package:markdown_editor/src/emoji_parser.dart';
 
 class EmojiInputFormatter extends TextInputFormatter {
   final EmojiParser _emojiParser = EmojiParser();

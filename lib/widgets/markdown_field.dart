@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_markdown_editor/src/emoji_input_formatter.dart';
+import 'package:markdown_editor/src/emoji_input_formatter.dart';
 
 class MarkdownField extends StatelessWidget {
   const MarkdownField({

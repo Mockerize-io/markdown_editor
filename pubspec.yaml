@@ -1,10 +1,10 @@
-name: simple_markdown_editor
+name: markdown_editor
 description: A TextField Widget that allow you to convert easily what's in the
   TextField to Markdown.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.2.0
-homepage: https://github.com/zahniar88/simple_markdown_editor
-repository: https://github.com/zahniar88/simple_markdown_editor
+homepage: https://github.com/Mockerize-io/markdown_editor
+repository: https://github.com/Mockerize-io/markdown_editor
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -33,7 +33,7 @@ flutter:
 
 # To add assets to your package, add an assets section, like this:
 # assets:
-#   - packages/simple_markdown_editor/assets/loading.gif
+#   - packages/markdown_editor/assets/loading.gif
 #   - images/a_dot_ham.jpeg
 #
 # For details regarding assets in packages, see

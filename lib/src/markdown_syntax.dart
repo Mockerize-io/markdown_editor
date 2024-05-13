@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:simple_markdown_editor/widgets/markdown_parse.dart';
+import 'package:markdown_editor/widgets/markdown_parse.dart';
 import 'package:markdown/markdown.dart' as md;
 
 // Colored hastag syntax
