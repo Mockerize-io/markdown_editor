@@ -129,6 +129,7 @@ class MarkdownField extends StatelessWidget {
         );
 
     return TextFormField(
+      clipBehavior: Clip.none,
       key: fieldKey,
       expands: expands,
       minLines: minLines,

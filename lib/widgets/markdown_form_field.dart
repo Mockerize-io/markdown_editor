@@ -163,39 +163,26 @@ class _MarkdownFormFieldState extends State<MarkdownFormField> {
         setState(() {});
       },
       child: Stack(
+        clipBehavior: Clip.hardEdge,
         children: [
           _editor(),
           // show toolbar
           if (!widget.readOnly)
-            Positioned(
-              top: 1,
-              left: 1,
-              child: SizedBox(
-                width: editorKey.currentContext != null
-                    ? (editorKey.currentContext!.findRenderObject()
-                                as RenderBox)
-                            .size
-                            .width -
-                        2
-                    : double.maxFinite,
-                // width: 500,
-                child: MarkdownToolbar(
-                  key: toolbarKey,
-                  controller: _internalController,
-                  autoCloseAfterSelectEmoji: widget.autoCloseAfterSelectEmoji,
-                  isEditorFocused: (bool status) {
-                    _focused = status;
-                    setState(() {});
-                  },
-                  onPreviewChanged: () {
-                    _focused = _focused ? false : true;
-                    FocusScope.of(context).unfocus();
-                    setState(() {});
-                  },
-                  focusNode: _internalFocus,
-                  emojiConvert: widget.emojiConvert,
-                ),
-              ),
+            MarkdownToolbar(
+              key: toolbarKey,
+              controller: _internalController,
+              autoCloseAfterSelectEmoji: widget.autoCloseAfterSelectEmoji,
+              isEditorFocused: (bool status) {
+                _focused = status;
+                setState(() {});
+              },
+              onPreviewChanged: () {
+                _focused = _focused ? false : true;
+                FocusScope.of(context).unfocus();
+                setState(() {});
+              },
+              focusNode: _internalFocus,
+              emojiConvert: widget.emojiConvert,
             ),
         ],
       ),
